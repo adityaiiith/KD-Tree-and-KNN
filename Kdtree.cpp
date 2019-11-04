@@ -51,8 +51,6 @@ void getnodesorted(vector<struct tree*> da,int start,int end,int cd,int dim)
             sort(da.begin()+start,da.begin()+end+1 ,mycmp);
         int mid=start+((end-start)/2);
 
-        cout<<"Middle is "<<mid<<" "<<da[mid]->data[0]<<" "<<da[mid]->data[1]<<"\n";
-
         result.push_back(da[mid]);
         getnodesorted(da,start,mid-1,(cd+1)%dim,dim);
         getnodesorted(da,mid+1,end,(cd+1)%dim,dim);
@@ -94,7 +92,7 @@ void traversal(struct tree *root)
 		for(int i=0;i<root->dim;i++)
 			cout<<root->data[i]<<" ";
         //cout<<" id is "<<root->id<<" "<<map[root->id]<<" ";
-		cout<<"cutting dimension is "<<root->cdim<<"\n";
+		cout<<"dimension is "<<root->cdim<<"\n";
 
 		traversal(root->right);
 	}
@@ -411,6 +409,7 @@ void knn(int k,struct tree *root,int dim)
 
 	struct tree *goal = create(dim,0);
 
+	cout<<"Enter the search point\n";
 	for(int i=0;i<dim;i++)
 	 	cin>>goal->data[i];
 
@@ -480,9 +479,7 @@ int main()
 
 		da.push_back(temp);
 	}
-
     getnodesorted(da,0,da.size()-1,0,dim);
-    
     for(auto x:result)
     {
         root=insert(root,x,0);
@@ -490,18 +487,12 @@ int main()
 
     traversal(root);
 
-	struct tree * temp=findmin(root,0,0,dim);
+	int sdim;
+	cout<<"Enter the dim for minimum point\n";
+	cin>>sdim;
+	struct tree * temp=findmin(root,sdim,0,dim);
 
-    cout<<"Minimum in 0 dimension is ";
-
-	for(int i=0;i<dim;i++)
-		cout<<temp->data[i]<<" ";
-	cout<<"\n";
-
-
-	temp=findmin(root,1,0,dim);
-
-    cout<<"Minimum in 1 dimension is ";
+    cout<<"Minimum in "<<sdim<<" dimension is ";
 
 	for(int i=0;i<dim;i++)
 		cout<<temp->data[i]<<" ";
@@ -520,6 +511,7 @@ int main()
 
 	struct tree * goal = create(dim,0);
 
+	cout<<"Enter the search point\n";
 	for(int i=0;i<dim;i++)
 	 	cin>>goal->data[i];
 
@@ -539,11 +531,11 @@ int main()
 	for(int i=0;i<dim;i++)
 		cin>>point->data[i];
 
-	// cout<<"Before deleting\n";
-	// traversal(root);
-	// root=deletenode(root,point,0,dim);
-	// cout<<"After deleting\n";
-	// traversal(root);
+	cout<<"Before deleting\n";
+	traversal(root);
+	root=deletenode(root,point,0,dim);
+	cout<<"After deleting\n";
+	traversal(root);
 
 	return 0;
 }
