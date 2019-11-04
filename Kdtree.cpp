@@ -94,7 +94,7 @@ void traversal(struct tree *root)
 		for(int i=0;i<root->dim;i++)
 			cout<<root->data[i]<<" ";
         //cout<<" id is "<<root->id<<" "<<map[root->id]<<" ";
-		cout<<root->cdim<<"\n";
+		cout<<"cutting dimension is "<<root->cdim<<"\n";
 
 		traversal(root->right);
 	}
@@ -379,16 +379,6 @@ pair<double,struct tree *> removemin(vector <pair<double,struct tree *>> &mheap)
     return temp;
 }
 
-
-class myComparator 
-{ 
-public: 
-    bool operator() (const pair<double,struct tree *> p1, const pair<double,struct tree *> p2) 
-    { 
-        return p1.first > p2.first; 
-    } 
-};
-
 void knn(int k,struct tree *root,int dim)
 {
 	struct tree *best = create(dim,0);
@@ -418,11 +408,11 @@ void knn(int k,struct tree *root,int dim)
 
 	cout<<"Knn is \n";
 	
-	while(k--&&mheap.size()>=0)
+	while(k--&&mheap.size()>0)
 	{
 		struct tree *temp;
         pair<double,struct tree *> pt=removemin(mheap);
-		cout<<pt.first<<" ";
+		// cout<<pt.first<<" ";
         temp=pt.second;
 
 		for(int i=0;i<temp->dim;i++)
@@ -461,7 +451,6 @@ void knn(int k,struct tree *root,int dim)
             adjust(mheap,mheap.size()-1);
         }
 	}
-
 }
 
 int main()
@@ -549,8 +538,10 @@ int main()
 	for(int i=0;i<dim;i++)
 		cin>>point->data[i];
 
+	cout<<"Before deleting\n";
+	traversal(root);
 	root=deletenode(root,point,0,dim);
-	
+	cout<<"After deleting\n";
 	traversal(root);
 
 	return 0;
