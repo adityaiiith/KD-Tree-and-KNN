@@ -379,13 +379,36 @@ pair<double,struct tree *> removemin(vector <pair<double,struct tree *>> &mheap)
     return temp;
 }
 
+void populateheap(struct tree *root,vector<pair<double,struct tree *> > &mheap,int dim,struct tree *goal)
+{
+	if(root==NULL)
+		return;
+
+	struct tree *tp=create(dim,root->id);
+
+	for(int i=0;i<dim;i++)
+		tp->data[i]=root->data[i];
+	
+	tp->left=root->left;
+	tp->right=root->right;
+	tp->cdim=root->cdim;
+	tp->dim=root->dim;
+	map[root->id]=true;
+	mheap.push_back(make_pair(dist(tp,goal),tp));
+	adjust(mheap,mheap.size()-1);
+
+	if(root->left!=NULL&&map[root->left->id]==false)
+		populateheap(root->left,mheap,dim,goal);
+	if(root->right!=NULL&&map[root->right->id]==false)
+		populateheap(root->right,mheap,dim,goal);
+}
+
 void knn(int k,struct tree *root,int dim)
 {
 	struct tree *best = create(dim,0);
     
 	vector<pair<double,struct tree *> > mheap;
 
-	vector<struct tree *> arr;
 	struct tree *goal = create(dim,0);
 
 	for(int i=0;i<dim;i++)
@@ -412,50 +435,28 @@ void knn(int k,struct tree *root,int dim)
 	{
 		struct tree *temp;
         pair<double,struct tree *> pt=removemin(mheap);
-		// cout<<pt.first<<" ";
+		cout<<pt.first<<" ";
         temp=pt.second;
 
 		for(int i=0;i<temp->dim;i++)
 			cout<<temp->data[i]<<" ";
 		cout<<"\n";
 
-		arr.push_back(temp);
+		//arr.push_back(temp);
         if(temp->left!=NULL&&map[temp->left->id]==false)
         {
-            struct tree *tp=create(dim,temp->left->id);
-
-            for(int i=0;i<dim;i++)
-                tp->data[i]=temp->left->data[i];
-            
-            tp->left=temp->left->left;
-            tp->right=temp->left->right;
-            tp->cdim=temp->left->cdim;
-            tp->dim=temp->left->dim;
-            map[temp->left->id]=true;
-            mheap.push_back(make_pair(dist(tp,goal),tp));
-            adjust(mheap,mheap.size()-1);
+            populateheap(temp->left,mheap,dim,goal);
         }
         if(temp->right!=NULL&&map[temp->right->id]==false)
         {
-            struct tree *tp=create(dim,temp->right->id);
-
-            for(int i=0;i<dim;i++)
-                tp->data[i]=temp->right->data[i];
-            
-            tp->left=temp->right->left;
-            tp->right=temp->right->right;
-            tp->cdim=temp->right->cdim;
-            tp->dim=temp->right->dim;
-            map[temp->right->id]=true;
-            mheap.push_back(make_pair(dist(tp,goal),tp));
-            adjust(mheap,mheap.size()-1);
+            populateheap(temp->right,mheap,dim,goal);
         }
 	}
 }
 
 int main()
 {
-    int size=20000;
+    int size=200000;
     struct tree nodes[size];
     int dim,no;
 	cout<<"Enter the dimension\n";
@@ -538,11 +539,11 @@ int main()
 	for(int i=0;i<dim;i++)
 		cin>>point->data[i];
 
-	cout<<"Before deleting\n";
-	traversal(root);
-	root=deletenode(root,point,0,dim);
-	cout<<"After deleting\n";
-	traversal(root);
+	// cout<<"Before deleting\n";
+	// traversal(root);
+	// root=deletenode(root,point,0,dim);
+	// cout<<"After deleting\n";
+	// traversal(root);
 
 	return 0;
 }
